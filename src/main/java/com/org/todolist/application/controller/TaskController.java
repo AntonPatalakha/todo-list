@@ -1,6 +1,5 @@
 package com.org.todolist.application.controller;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.validation.Valid;
@@ -12,46 +11,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.org.todolist.application.model.Task;
-import com.org.todolist.application.repository.TaskRepository;
+import com.org.todolist.application.model.TaskUI;
+import com.org.todolist.application.service.TaskService;
 
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
-    TaskRepository taskRepository;
+    TaskService taskService;
 
     @GetMapping("/bulkcreate")
     public String bulkcreate() {
-        taskRepository.saveAll(Arrays.asList(
-                new Task("Task1", new String[] {"Test1", "Test2"} )  ,
-                new Task("Task2", new String[] {"Test1", "Test2"} )  ,
-                new Task("Task3", new String[] {"Test1", "Test2"} )  ,
-                new Task("Task4", new String[] {"Test1", "Test2"} )  ));
-        return "Tasks are created";
+        return taskService.bulkcreate();
 
     }
 
     @PostMapping("/create")
-    public String create(@RequestBody @Valid Task task) {
-        taskRepository.save(new Task(task.getTaskName(), task.getTaskCategories()));
-        return "Task is created";
+    public String create(@RequestBody @Valid TaskUI taskUi) {
+        return taskService.create(taskUi);
+        
     }
     
     @GetMapping("/findall")
-    public Collection<Task> findAll() {
-        return taskRepository.findAll();
+    public Collection<TaskUI> findAll() {
+        return taskService.findAll();
     }
 
     @GetMapping("/findbytaskname")
-    public Collection<Task> findByTaskName(String taskName) {
-        return taskRepository.findByTaskName(taskName);
+    public Collection<TaskUI> findByName(String taskName) {
+        return taskService.findByName(taskName);
     }
     
     @GetMapping("/findbytaskcategory")
-    public Collection<Task> findByCategory(String categoryName) {
-        return taskRepository.findByTaskCategory(categoryName);
+    public Collection<TaskUI> findByCategory(String categoryName) {
+        return taskService.findByCategory(categoryName);
     }
     
     
